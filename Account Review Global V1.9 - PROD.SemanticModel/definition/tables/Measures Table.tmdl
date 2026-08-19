@@ -17,18 +17,6 @@ table 'Measures Table'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Uptime Percentage' = ```
-			
-			    DIVIDE(
-			        SUM ( BI_SVTLY_PRINTER_STATES[ALEKS_available_hours] ),
-			        SUM ( BI_SVTLY_PRINTER_STATES[ALEKS_available_plus_fault]),
-			        0
-			    )
-			```
-		lineageTag: f6f3a1de-d90d-4650-94a7-62cf83cf1bcd
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
 	measure 'Uptime Percentage of Printers Connected 12M Atleast' = ```
 			
 			CALCULATE( [Uptime Percentage], FILTER( 'BI_SVTLY_THINGS', BI_SVTLY_THINGS[ACTIVATIONDATE] <= EDATE( TODAY(), -12 ) 
@@ -243,7 +231,7 @@ table 'Measures Table'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure Spares = CALCULATE( SUM(BI_SV_SALES_TO_INSTALL_DTL[line_qty]), BI_SV_SALES_TO_INSTALL_DTL[line_type] = "Parts" )
+	measure Spares = CALCULATE( SUM(BI_SV_SALES_TO_INSTALL_DTL[line_qty]), BI_SV_SALES_TO_INSTALL_DTL[line_type] = "Test" )
 		formatString: 0
 		lineageTag: 5cff21f7-ab1a-405f-9170-1274c3434d92
 
@@ -403,6 +391,24 @@ table 'Measures Table'
 		lineageTag: 1a1b71d7-4bbf-406a-adb7-b0964e010c80
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure test_measure = ```
+			
+			CALCULATE(
+			            COUNTROWS( 'BI_SF_INSTALLED_PRODUCT'),
+			            KEEPFILTERS( 'BI_SF_INSTALLED_PRODUCT'[is_Active__c] = 1 ),
+			            KEEPFILTERS( 'BI_SF_INSTALLED_PRODUCT'[isPrinter__c] = 1 ),
+			            KEEPFILTERS( 'BI_SF_INSTALLED_PRODUCT'[isInstalledBase__c] = 1 ),
+			            
+			            KEEPFILTERS(
+			                NOT (
+			                    'BI_SF_INSTALLED_PRODUCT'[Product_Family__c] IN {"Cloud", "Editor"}
+			                )
+			
+			))
+			```
+		formatString: 0
+		lineageTag: f5e6b477-d5c0-4690-96de-2ef5bb823fb0
 
 	column Dummy
 		dataType: int64
